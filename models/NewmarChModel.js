@@ -6,6 +6,10 @@ const newmarchSchema = new mongoose.Schema({
         type: String,
         require: true
     },
+    businessName: {
+        type: String,
+        require: true
+    },
     email: {
         type: String,
         require: true,

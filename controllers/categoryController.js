@@ -119,34 +119,68 @@ const getAllCategories = async (req, res) => {
 //   }
 // };
 
+// const getCategoryById = async (req, res) => {
+//   try {
+//     const { categoryId } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+//       return res.status(400).json({ message: 'Invalid ID format.' });
+//     }
+
+//     // Find the category by ID
+//     const category = await categoryModel.findById(categoryId);
+//     if (!category) {
+//       return res.status(404).json({ message: 'Category not found.' });
+//     }
+
+//     // Fetch products under the category using the categoryId
+//     const products = await productModel.find({ category: categoryId })
+
+//     res.status(200).json({
+//       message: 'Category retrieved successfully',
+//       data: {
+//         category,
+//         products,
+//       },
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 const getCategoryById = async (req, res) => {
   try {
     const { categoryId } = req.params;
 
+    // Validate if categoryId is a valid MongoDB ObjectId
     if (!mongoose.Types.ObjectId.isValid(categoryId)) {
       return res.status(400).json({ message: 'Invalid ID format.' });
     }
 
-    // Find the category by ID
+    // Find the category by its ID
     const category = await categoryModel.findById(categoryId);
     if (!category) {
       return res.status(404).json({ message: 'Category not found.' });
     }
 
-    // Fetch products under the category using the categoryId
-    const products = await productModel.find({ category: categoryId })
+    // Fetch products that belong to this category, with all details (id, name, price, etc.)
+    const products = await productModel
+      .find({ category: categoryId }) // Find products by categoryId
+      .select('productName productDescription  productPrice _id productImage category') // Select all necessary fields
+      .lean(); // Convert to plain JavaScript objects for easier manipulation
 
+    // Return the category and all products under this category
     res.status(200).json({
       message: 'Category retrieved successfully',
       data: {
         category,
-        products,
+        products, // Return full product data
       },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Update a category
 const updateCategory = async (req, res) => {

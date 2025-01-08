@@ -116,13 +116,25 @@ const createProduct = async (req, res) => {
       category: categoryId  // Associate product with category from params
     });
 
-    // Add the product to the merchant's product list
+    // // Add the product to the merchant's product list
+    // merchantStore.products.push(newProduct._id);
+    // await merchantStore.save();
+
+    // // Add the product to the category's product list
+    // category.products.push(newProduct._id);
+    // await category.save();
+    if (!Array.isArray(merchantStore.products)) {
+      merchantStore.products = [];
+    }
     merchantStore.products.push(newProduct._id);
     await merchantStore.save();
 
-    // Add the product to the category's product list
+    if (!Array.isArray(category.products)) {
+      category.products = [];
+    }
     category.products.push(newProduct._id);
     await category.save();
+
 
     res.status(201).json({
       message: "New Product created successfully.",
@@ -203,7 +215,7 @@ const getAllProducts = async (req, res) => {
 const getTopProducts = async (req, res) => {
   try {
     // Fetch 9 products sorted by createdAt (newest first)
-    const products = await productModel.find().sort({ createdAt: -1 }).limit(9);
+    const products = await productModel.find().sort({ createdAt: -1 }).limit(8);
 
     if (products.length === 0) {
       return res.status(404).json("No products found.");

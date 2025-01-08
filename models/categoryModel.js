@@ -15,10 +15,12 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  products: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Product', // Assuming the product model is named "Product"
+  merchant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product'
   },
+  products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }]
+ 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Category', categorySchema);

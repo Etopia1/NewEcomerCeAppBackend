@@ -650,6 +650,19 @@ const newOrderNotificationTemplate = (merchantName, userName, userEmail, userAdd
           color: #777;
           border-top: 1px solid #ddd;
         }
+           @media (max-width: 480px) {
+              .header h1 {
+                  font-size: 20px;
+              }
+              .content h2 {
+                  font-size: 18px;
+              }
+              .order-details th, .order-details td,
+              .items-ordered th, .items-ordered td {
+                  font-size: 14px;
+                  padding: 8px;
+              }
+          }
       </style>
     </head>
     <body>
@@ -703,16 +716,167 @@ const newOrderNotificationTemplate = (merchantName, userName, userEmail, userAdd
           <p>${userAddress}</p>
 
           <p>Please take necessary actions to process this order.</p>
-          <p>Best regards,<br><strong>Groceria Team</strong></p>
+          <p>Best regards,<br><strong> Eto Shopping Team</strong></p>
         </div>
         <div class="footer">
-          &copy; ${new Date().getFullYear()} Groceria. All rights reserved.
+          &copy; ${new Date().getFullYear()}  Eto Shopping. All rights reserved.
         </div>
       </div>
     </body>
     </html>
   `;
 };
+
+// const newOrderNotificationTemplate = (sellerName, userOrderId, orderDate, items, totalAmount) => {
+//   return `
+//   <!DOCTYPE html>
+//   <html lang="en">
+//   <head>
+//       <meta charset="UTF-8">
+//       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//       <title>New Order Notification</title>
+//       <style>
+//           body {
+//               font-family: Arial, sans-serif;
+//               line-height: 1.6;
+//               color: #333;
+//               background-color: #f7f7f7;
+//               margin: 0;
+//               padding: 0;
+//           }
+//           .container {
+//               max-width: 600px;
+//               width: 90%;
+//               margin: 20px auto;
+//               padding: 20px;
+//               border-radius: 10px;
+//               box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+//               background-color: #fff;
+//           }
+//           .header {
+//               background: linear-gradient(90deg, #28a745, #85e085);
+//               padding: 20px;
+//               text-align: center;
+//               color: #fff;
+//               border-radius: 10px 10px 0 0;
+//           }
+//           .header h1 {
+//               margin: 0;
+//               font-size: 24px;
+//           }
+//           .content {
+//               padding: 20px;
+//           }
+//           .content h2 {
+//               margin-top: 20px;
+//               color: #28a745;
+//               font-size: 20px;
+//           }
+//           .order-details, .items-ordered {
+//               width: 100%;
+//               border-collapse: collapse;
+//               margin-bottom: 20px;
+//           }
+//           .order-details th, .order-details td,
+//           .items-ordered th, .items-ordered td {
+//               padding: 10px;
+//               border: 1px solid #ddd;
+//               text-align: left;
+//           }
+//           .order-details th, .items-ordered th {
+//               background-color: #f2f2f2;
+//           }
+//           .items-ordered td img {
+//               max-width: 50px;
+//               height: auto;
+//               border-radius: 5px;
+//           }
+//           .footer {
+//               margin-top: 20px;
+//               text-align: center;
+//               padding: 10px;
+//               font-size: 0.9em;
+//               color: #777;
+//               border-top: 1px solid #ddd;
+//           }
+
+//           /* Responsive Design */
+//           @media (max-width: 480px) {
+//               .header h1 {
+//                   font-size: 20px;
+//               }
+//               .content h2 {
+//                   font-size: 18px;
+//               }
+//               .order-details th, .order-details td,
+//               .items-ordered th, .items-ordered td {
+//                   font-size: 14px;
+//                   padding: 8px;
+//               }
+//           }
+//       </style>
+//   </head>
+//   <body>
+//       <div class="container">
+//           <div class="header">
+//               <h1>New Order Notification</h1>
+//           </div>
+//           <div class="content">
+//               <p>Hello, <strong>${sellerName}</strong>,</p>
+//               <p>You have received a new order! Below are the details:</p>
+
+//               <h2>Order Details</h2>
+//               <table class="order-details">
+//                   <thead>
+//                       <tr>
+//                           <th>Order ID</th>
+//                           <th>Order Date</th>
+//                           <th>Total</th>
+//                       </tr>
+//                   </thead>
+//                   <tbody>
+//                       <tr>
+//                           <td>${userOrderId}</td>
+//                           <td>${orderDate}</td>
+//                           <td>₦${totalAmount}</td>
+//                       </tr>
+//                   </tbody>
+//               </table>
+
+//               <h2>Items Ordered</h2>
+//               <table class="items-ordered">
+//                   <thead>
+//                       <tr>
+//                           <th>Image</th>
+//                           <th>Product Name</th>
+//                           <th>Quantity</th>
+//                           <th>Price</th>
+//                       </tr>
+//                   </thead>
+//                   <tbody>
+//                       ${items.map(item => `
+//                           <tr>
+//                               <td><img src="${item.productImage}" alt="${item.productName}"></td>
+//                               <td>${item.productName}</td>
+//                               <td>${item.quantity}</td>
+//                               <td>₦${item.price}</td>
+//                           </tr>
+//                       `).join('')}
+//                   </tbody>
+//               </table>
+
+//               <p>We hope you deliver promptly to ensure customer satisfaction.</p>
+//               <p>Best regards,<br><strong> Eto Shopping Team</strong></p>
+//           </div>
+//           <div class="footer">
+//               &copy; ${new Date().getFullYear()} Eto Shopping. All rights reserved.
+//           </div>
+//       </div>
+//   </body>
+//   </html>
+//   `;
+// };
+
 
 const orderConfirmationTemplate = (fullName, userOrderId, orderDate, items, totalAmount, deliveryCharge) => {
   return `
@@ -792,6 +956,30 @@ const orderConfirmationTemplate = (fullName, userOrderId, orderDate, items, tota
               color: #777;
               border-top: 1px solid #ddd;
           }
+               @media only screen and (max-width: 600px) {
+              .container {
+                  width: 90%;
+                  margin: 10px auto;
+                  padding: 10px;
+              }
+              .header h1 {
+                  font-size: 20px;
+              }
+              .content h2 {
+                  font-size: 18px;
+              }
+              .order-details th, .order-details td,
+              .items-ordered th, .items-ordered td {
+                  font-size: 14px;
+                  padding: 8px;
+              }
+              .items-ordered td img {
+                  max-width: 40px;
+              }
+              .summary p {
+                  font-size: 14px;
+              }
+          }
       </style>
   </head>
   <body>
@@ -851,16 +1039,168 @@ const orderConfirmationTemplate = (fullName, userOrderId, orderDate, items, tota
               </div>
 
               <p>Thank you for shopping with us!</p>
-              <p>Best regards,<br><strong>Groceria Team</strong></p>
+              <p>Best regards,<br><strong> Eto Shopping Team</strong></p>
           </div>
           <div class="footer">
-              &copy; ${new Date().getFullYear()} Groceria. All rights reserved.
+              &copy; ${new Date().getFullYear()}  Eto Shopping. All rights reserved.
           </div>
       </div>
   </body>
   </html>
   `;
 };
+// const orderConfirmationTemplate = (fullName, userOrderId, orderDate, items, totalAmount, deliveryCharge) => {
+//   return `
+//   <!DOCTYPE html>
+//   <html lang="en">
+//   <head>
+//       <meta charset="UTF-8">
+//       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//       <title>Order Confirmation</title>
+//       <style>
+//           body {
+//               font-family: Arial, sans-serif;
+//               line-height: 1.6;
+//               color: #333;
+//               background-color: #f7f7f7;
+//               margin: 0;
+//               padding: 0;
+//           }
+//           .container {
+//               max-width: 600px;
+//               margin: 20px auto;
+//               padding: 20px;
+//               border-radius: 10px;
+//               box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+//               background-color: #fff;
+//           }
+//           .header {
+//               background: linear-gradient(90deg, #007bff, #00ccff);
+//               padding: 20px;
+//               text-align: center;
+//               color: #fff;
+//               border-radius: 10px 10px 0 0;
+//           }
+//           .header h1 {
+//               margin: 0;
+//               font-size: 24px;
+//           }
+//           .content {
+//               padding: 20px;
+//           }
+//           .content h2 {
+//               color: #007bff;
+//               font-size: 20px;
+//               margin-bottom: 10px;
+//           }
+//           .order-details, .items-ordered {
+//               width: 100%;
+//               border-collapse: collapse;
+//               margin-bottom: 20px;
+//           }
+//           .order-details th, .order-details td,
+//           .items-ordered th, .items-ordered td {
+//               padding: 10px;
+//               border: 1px solid #ddd;
+//               text-align: left;
+//           }
+//           .items-ordered td img {
+//               max-width: 50px;
+//               height: auto;
+//               border-radius: 5px;
+//           }
+//           .summary {
+//               background-color: #f9f9f9;
+//               padding: 15px;
+//               border-radius: 5px;
+//               box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+//               margin-bottom: 20px;
+//           }
+//           .footer {
+//               text-align: center;
+//               font-size: 0.9em;
+//               color: #777;
+//               padding: 10px;
+//               border-top: 1px solid #ddd;
+//           }
+//           @media only screen and (max-width: 600px) {
+//               .container {
+//                   width: 90%;
+//                   margin: 10px auto;
+//                   padding: 10px;
+//               }
+//               .header h1 {
+//                   font-size: 20px;
+//               }
+//               .content h2 {
+//                   font-size: 18px;
+//               }
+//               .order-details th, .order-details td,
+//               .items-ordered th, .items-ordered td {
+//                   font-size: 14px;
+//                   padding: 8px;
+//               }
+//               .items-ordered td img {
+//                   max-width: 40px;
+//               }
+//               .summary p {
+//                   font-size: 14px;
+//               }
+//           }
+//       </style>
+//   </head>
+//   <body>
+//       <div class="container">
+//           <div class="header">
+//               <h1>Order Confirmation</h1>
+//           </div>
+//           <div class="content">
+//               <p>Hello, <strong>${fullName}</strong>,</p>
+//               <p>Your order has been successfully placed! Below are the details:</p>
+//               <h2>Order Details</h2>
+//               <table class="order-details">
+//                   <tr><th>Order ID</th><td>${userOrderId}</td></tr>
+//                   <tr><th>Order Date</th><td>${orderDate}</td></tr>
+//                   <tr><th>Total</th><td>₦${totalAmount}</td></tr>
+//               </table>
+//               <h2>Items Ordered</h2>
+//               <table class="items-ordered">
+//                   <thead>
+//                       <tr>
+//                           <th>Image</th>
+//                           <th>Product Name</th>
+//                           <th>Quantity</th>
+//                           <th>Price</th>
+//                       </tr>
+//                   </thead>
+//                   <tbody>
+//                       ${items.map(item => `
+//                           <tr>
+//                               <td><img src="${item.productImage}" alt="${item.productName}"></td>
+//                               <td>${item.productName}</td>
+//                               <td>${item.quantity}</td>
+//                               <td>₦${item.price}</td>
+//                           </tr>
+//                       `).join('')}
+//                   </tbody>
+//               </table>
+//               <h2>Order Summary</h2>
+//               <div class="summary">
+//                   <p><strong>Subtotal:</strong> ₦${totalAmount - deliveryCharge}</p>
+//                   <p><strong>Shipping:</strong> ₦${deliveryCharge}</p>
+//                   <p><strong>Total:</strong> ₦${totalAmount}</p>
+//               </div>
+//               <p>Thank you for shopping with us!</p>
+//           </div>
+//           <div class="footer">
+//               &copy; ${new Date().getFullYear()} Eto Shopping. All rights reserved.
+//           </div>
+//       </div>
+//   </body>
+//   </html>
+//   `;
+// };
+
 
 const paymentReceiptTemplate = (emailData) => {
   return ` <!DOCTYPE html>
@@ -963,7 +1303,7 @@ const paymentReceiptTemplate = (emailData) => {
                 <p>If you have any questions regarding this payment, feel free to contact our support team.</p>
             </div>
             <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} Company Name. All rights reserved.</p>
+                <p>&copy; ${new Date().getFullYear()}  Eto Shopping. All rights reserved.</p>
             </div>
         </div>
     </body>

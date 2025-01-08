@@ -62,12 +62,9 @@ const orderSchema = new mongoose.Schema({
     },
     paymentStatus: { type: String, default: 'Pending' },
     paymentMethod: { type: String, required: true },
-    paymentDetails: { 
-      type: Map,
-      of: mongoose.Schema.Types.Mixed, 
-      required: true 
+    paymentDetails: {
+      type: Object
     },
-  
     orderDate: {
       type: Date,
       default: Date.now

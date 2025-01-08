@@ -52,7 +52,7 @@ exports.signUpTemplate = (otp, fullName) => {
                     <!-- Footer -->
                     <tr>
                         <td class="footer" style="background-color: #080516; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                        Copyright &copy; 2024 | Etopia Practise
+                        Copyright &copy; 2024 | Eto Shopping
                         </td>
                     </tr>
                 </table>
@@ -118,7 +118,7 @@ exports.forgotPasswordTemplate = (otp, fullName) => {
                     <!-- Footer -->
                     <tr>
                         <td class="footer" style="background-color: #080516; padding: 40px; text-align: center; color: white; font-size: 14px;">
-                        Copyright &copy; 2024 | Eip enterprice
+                        Copyright &copy; 2024 | Eto Shopping
                         </td>
                     </tr>
                 </table>

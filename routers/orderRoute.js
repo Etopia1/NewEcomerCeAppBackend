@@ -10,7 +10,9 @@ const {
     getOrderDetails,
     updateOrderStatus,
     userDeleteOrder
-} = require('../controllers/orderController'); // Adjust the path if necessary
+} = require('../controllers/orderController');
+const midasValidator = require('../middlewares/validator')
+ // Adjust the path if necessary
 const { authenticate} = require("../middlewares/Auth")
 const {authorize} = require('../middlewares/Auth')
 
@@ -22,7 +24,7 @@ const {authorize} = require('../middlewares/Auth')
 router.post('/checkout', authenticate, checkout);
 
 // Route for confirming an order
-router.post('/confirm-order', authenticate, confirmOrder);
+router.post('/confirm-order' , authenticate, confirmOrder);
 
 // Route for fetching all orders for the user
 router.get('/orders', authenticate, getAllOrders);

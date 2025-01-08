@@ -1088,10 +1088,10 @@ const confirmOrder = async (req, res) => {
             country: country || 'Nigeria',
             orderStatus: 'Processing',
             paymentStatus:  paymentMethod === 'Bank' 
-            ? 'Paid' 
-            : paymentMethod === 'Cash on Delivery' 
-            ? 'Pending' 
-            : null, 
+            ? 'Paid'  : "Pending",
+            // : paymentMethod === 'Cash on Delivery' 
+            // ? 'Pending' 
+            // : null, 
             paymentMethod,
             paymentDetails
         });
@@ -1111,30 +1111,57 @@ const confirmOrder = async (req, res) => {
         });
 
         // Send payment details only if the payment method is "Bank"
-        const emailData = {
-            userName: user.fullName,
-            paymentReference: paymentDetails.reference,
-            amountPaid: `$${paymentDetails.amount}`,
-            transactionDate: new Date().toLocaleString("en-US", { 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit', 
-                hour12: true 
-            }),
-            currentYear: new Date().getFullYear(),
-          };
+        // const emailData = {
+        //     userName: user.fullName,
+        //     paymentReference: paymentDetails.reference,
+        //     amountPaid: `$${paymentDetails.amount}`,
+        //     transactionDate: new Date().toLocaleString("en-US", { 
+        //         year: 'numeric', 
+        //         month: '2-digit', 
+        //         day: '2-digit', 
+        //         hour: '2-digit', 
+        //         minute: '2-digit', 
+        //         hour12: true 
+        //     }),
+        //     currentYear: new Date().getFullYear(),
+        //   };
       
           // Send the email
-          if (paymentMethod === 'Bank') {
+        //   if (paymentMethod === 'Bank') {
+        //     await sendMail({
+        //      email: user.email,
+        //       subject: "Payment Successful",
+        //       html: paymentReceiptTemplate(emailData), // Call template with dynamic data
+        //     });
+        //   }
+        if (paymentMethod === 'Bank') {
+            if (!paymentDetails || !paymentDetails.reference) {
+                return res.status(400).json({
+                    message: "Payment details are missing or invalid for Bank payment method."
+                });
+            }
+        
+            const emailData = {
+                userName: user.fullName,
+                paymentReference: paymentDetails.reference,
+                amountPaid: `$${paymentDetails.amount}`,
+                transactionDate: new Date().toLocaleString("en-US", { 
+                            year: 'numeric', 
+                            month: '2-digit', 
+                            day: '2-digit', 
+                            hour: '2-digit', 
+                            minute: '2-digit', 
+                            hour12: true 
+                        }),
+                currentYear: new Date().getFullYear(),
+            };
+        
             await sendMail({
-             email: user.email,
-              subject: "Payment Successful",
-              html: paymentReceiptTemplate(emailData), // Call template with dynamic data
+                email: user.email,
+                subject: "Payment Successful",
+                html: paymentReceiptTemplate(emailData),
             });
-          }
-
+        }
         // Send a separate email to each merchant with the price specific to their products
         for (const [merchantId, merchantOrder] of Object.entries(merchantOrders)) {
             const merchant = merchantOrder.merchant;
@@ -1145,7 +1172,7 @@ const confirmOrder = async (req, res) => {
                 subject: "New Order Received",
                 email: merchant.email,
                 html: newOrderNotificationTemplate(
-                    merchant.businessName,
+                    merchant.fullName,
                     user.fullName,
                     user.phoneNumber,
                     customerAddress,
@@ -1231,32 +1258,34 @@ const groupItemsByMerchant = (items) => {
 const getAllOrders = async (req, res) => {
     try {
         const userId = req.user ? req.user._id : null;
-  
-        // Find the user from the database
+
+        // Ensure the user is authenticated
+        if (!userId) {
+            return res.status(401).json({ message: "User is not authenticated." });
+        }
+
+        // Find the user by their ID
         const user = await userModel.findById(userId);
-        
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: "Invalid order ID format." });
-        }
+
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found." });
         }
-  
-        // Find all orders for the user
-        const orders = await Order.find({ _id: { $in: user.orders } })
+
+        // Fetch all orders for the user
+        const orders = await Order.find({ user: userId })
             .sort({ orderDate: -1 })
-            .populate("items");
-        
-        // Check if orders are empty
-        if (orders.length === 0) {
-            return res.status(200).json({ message: 'No orders found for this user.' });
-        }
-  
-        // Return orders if they exist
-        res.status(200).json(orders);
+            .populate("items.product"); // Populate referenced product details
+
+        // Return orders or an empty array if none are found
+        return res.status(200).json({
+            message: orders.length > 0 ? "Orders fetched successfully." : "No orders found.",
+            orders,
+        });
     } catch (error) {
+        console.error("Error fetching orders:", error);
         res.status(500).json({
-            message: error.message
+            message: "An error occurred while fetching orders.",
+            error: error.message,
         });
     }
 };
@@ -1370,37 +1399,28 @@ const updateOrderStatus = async (req, res) => {
   // Route to handle updating the order status
   
 
-
-const getOrderDetails = async (req, res) => {
+  const getOrderDetails = async (req, res) => {
     try {
-      const userId = req.user ? req.user._id : null;
+      const userId = req.user?._id;
       const { orderId } = req.params;
   
-      // Validate user ID
-      if (!mongoose.Types.ObjectId.isValid(userId)) {
-        return res.status(400).json({ message: "Invalid user ID format." });
+      // Validate IDs
+      if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(orderId)) {
+        return res.status(400).json({ message: "Invalid ID format." });
       }
+            // Find the user
+            const user = await userModel.findById(userId);
+            if (!user) {
+              return res.status(404).json({ message: "User not found." });
+            }
   
-      // Validate order ID
-      if (!mongoose.Types.ObjectId.isValid(orderId)) {
-        return res.status(400).json({ message: "Invalid order ID format." });
-      }
-  
-      // Find the user
-      const user = await userModel.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: "User not found." });
-      }
-  
-      // Find the order
-      const order = await Order.findOne({ _id: orderId, _id: { $in: user.orders } })
-        .populate("items")
+      // Find the order directly linked to the user
+      const order = await Order.findOne({ _id: orderId }).populate("items");
   
       if (!order) {
         return res.status(404).json({ message: "Order not found for this user." });
       }
   
-      // Return the order details
       res.status(200).json({
         message: "Order details fetched successfully.",
         data: order,
@@ -1411,6 +1431,47 @@ const getOrderDetails = async (req, res) => {
       });
     }
   };
+  
+// const getOrderDetails = async (req, res) => {
+//     try {
+//       const userId = req.user ? req.user._id : null;
+//       const { orderId } = req.params;
+  
+//       // Validate user ID
+//       if (!mongoose.Types.ObjectId.isValid(userId)) {
+//         return res.status(400).json({ message: "Invalid user ID format." });
+//       }
+  
+//       // Validate order ID
+//       if (!mongoose.Types.ObjectId.isValid(orderId)) {
+//         return res.status(400).json({ message: "Invalid order ID format." });
+//       }
+  
+    //   // Find the user
+    //   const user = await userModel.findById(userId);
+    //   if (!user) {
+    //     return res.status(404).json({ message: "User not found." });
+    //   }
+  
+//       // Find the order
+//       const order = await Order.findOne({ _id: orderId, _id: { $in: user.orders } })
+//         .populate("items")
+  
+//       if (!order) {
+//         return res.status(404).json({ message: "Order not found for this user." });
+//       }
+  
+//       // Return the order details
+//       res.status(200).json({
+//         message: "Order details fetched successfully.",
+//         data: order,
+//       });
+//     } catch (error) {
+//       res.status(500).json({
+//         message: error.message,
+//       });
+//     }
+//   };
 
   
 const getMerchantOrders = async (req, res) => {
